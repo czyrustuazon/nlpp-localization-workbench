@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NLPP Localization Workbench</title>
+  <style>
+    :root {
+      --bg: #121416;
+      --panel: #1c1f24;
+      --border: #3a3f46;
+      --text: #e8eaed;
+      --muted: #9aa0a6;
+      --accent: #7cb3d9;
+      --sans: "Segoe UI", system-ui, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      height: 100%;
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text);
+    }
+    .shell {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    header {
+      flex: 0 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem 1rem;
+      align-items: center;
+      padding: 0.65rem 1rem;
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+    header .sub {
+      color: var(--muted);
+      font-size: 0.82rem;
+      flex: 1 1 12rem;
+    }
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .tabs button {
+      font: inherit;
+      color: var(--text);
+      background: #2a2f36;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.45rem 0.85rem;
+      cursor: pointer;
+    }
+    .tabs button:hover { border-color: var(--accent); }
+    .tabs button.active {
+      background: #2a4558;
+      border-color: #4a7a9a;
+    }
+    .frames {
+      flex: 1 1 auto;
+      position: relative;
+      min-height: 0;
+      background: var(--bg);
+    }
+    .frames iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: var(--bg);
+      display: none;
+    }
+    .frames iframe.active { display: block; }
+    .note {
+      flex: 0 0 auto;
+      font-size: 0.75rem;
+      color: var(--muted);
+      padding: 0.35rem 1rem;
+      border-top: 1px solid var(--border);
+      background: var(--panel);
+    }
+    .note a { color: var(--accent); }
+    .missing {
+      display: none;
+      position: absolute;
+      inset: 0;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      text-align: center;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .missing.show { display: flex; }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <h1>NLPP Workbench</h1>
+      <p class="sub">Switch tools with the tabs. Edits stay loaded until you close this window — still click <strong>Save progress</strong> in each tool before quitting.</p>
+      <div class="tabs" role="tablist">
+        <button type="button" class="active" data-tab="scripts" role="tab" aria-selected="true">Scripts</button>
+        <button type="button" data-tab="strings" role="tab" aria-selected="false">Strings</button>
+        <button type="button" data-tab="images" role="tab" aria-selected="false">Images</button>
+      </div>
+    </header>
+
+    <div class="frames">
+      <iframe
+        id="frame-scripts"
+        class="active"
+        title="Scripts"
+        data-src="kit/NLPP_Translate.html"
+      ></iframe>
+      <iframe
+        id="frame-strings"
+        title="Strings"
+        data-src="kit/NLPP_Translate_Strings.html"
+      ></iframe>
+      <iframe
+        id="frame-images"
+        title="Images"
+        data-src="kit/NLPP_Translate_Images/index.html"
+      ></iframe>
+      <div id="missing" class="missing"></div>
+    </div>
+
+    <p class="note">
+      Open this <code>index.html</code> — kits live in the <code>kit/</code> folder beside it.
+      Discord:
+      <a href="https://discord.com/channels/1536915629787840572/1545180296343715891" target="_blank" rel="noopener noreferrer">#translated-work-to-review</a>
+    </p>
+  </div>
+
+  <script>
+(function () {
+  const buttons = Array.from(document.querySelectorAll(".tabs button"));
+  const missing = document.getElementById("missing");
+  const loaded = Object.create(null);
+
+  function frameFor(tab) {
+    return document.getElementById("frame-" + tab);
+  }
+
+  function showMissing(msg) {
+    missing.textContent = msg;
+    missing.classList.add("show");
+  }
+
+  function hideMissing() {
+    missing.classList.remove("show");
+    missing.textContent = "";
+  }
+
+  function activate(tab) {
+    buttons.forEach((b) => {
+      const on = b.dataset.tab === tab;
+      b.classList.toggle("active", on);
+      b.setAttribute("aria-selected", on ? "true" : "false");
+    });
+    ["scripts", "strings", "images"].forEach((id) => {
+      const f = frameFor(id);
+      if (f) f.classList.toggle("active", id === tab);
+    });
+    hideMissing();
+    const frame = frameFor(tab);
+    if (!frame) return;
+    if (!loaded[tab]) {
+      const src = frame.getAttribute("data-src");
+      frame.src = src;
+      loaded[tab] = true;
+      frame.addEventListener("error", () => {
+        showMissing("Could not load " + src + ". Check that kit/ exists next to this index.");
+      });
+    }
+  }
+
+  buttons.forEach((b) => {
+    b.addEventListener("click", () => activate(b.dataset.tab));
+  });
+
+  activate("scripts");
+
+  const dirtyByTool = { scripts: false, strings: false, images: false };
+  window.addEventListener("message", (e) => {
+    const d = e.data;
+    if (!d || d.type !== "nlpp-unsaved") return;
+    if (Object.prototype.hasOwnProperty.call(dirtyByTool, d.tool)) {
+      dirtyByTool[d.tool] = !!d.dirty;
+    }
+  });
+  window.addEventListener("beforeunload", (e) => {
+    if (!dirtyByTool.scripts && !dirtyByTool.strings && !dirtyByTool.images) return;
+    e.preventDefault();
+    e.returnValue = "";
+  });
+})();
+  </script>
+</body>
+</html>
