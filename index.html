@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
+  <meta name="nlpp-workbench-build" content="2" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>NLPP Localization Workbench</title>
   <style>
@@ -42,16 +43,23 @@
       font-size: 1rem;
       font-weight: 600;
     }
-    header .sub {
-      color: var(--muted);
-      font-size: 0.82rem;
-      flex: 1 1 12rem;
-    }
     .tabs {
       display: flex;
       flex-wrap: wrap;
       gap: 0.35rem;
+      margin-left: auto;
     }
+    #nlpp-check-updates {
+      font: inherit;
+      color: var(--text);
+      background: #2a2f36;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.45rem 0.85rem;
+      cursor: pointer;
+    }
+    #nlpp-check-updates:hover { border-color: var(--accent); }
+    #nlpp-update-status { color: var(--muted); font-size: 0.8rem; }
     .tabs button {
       font: inherit;
       color: var(--text);
@@ -109,11 +117,9 @@
   <div class="shell">
     <header>
       <h1>NLPP Workbench</h1>
-      <p class="sub">Switch tools with the tabs. Edits stay loaded until you close this window — still click <strong>Save progress</strong> in each tool before quitting.</p>
       <div class="tabs" role="tablist">
         <button type="button" class="active" data-tab="scripts" role="tab" aria-selected="true">Scripts</button>
         <button type="button" data-tab="strings" role="tab" aria-selected="false">Strings</button>
-        <button type="button" data-tab="images" role="tab" aria-selected="false">Images</button>
       </div>
     </header>
 
@@ -122,28 +128,23 @@
         id="frame-scripts"
         class="active"
         title="Scripts"
-        data-src="kit/NLPP_Translate.html?v=20260903231926"
+        data-src="kit/NLPP_Translate.html?v=202611042105"
       ></iframe>
       <iframe
         id="frame-strings"
         title="Strings"
-        data-src="kit/NLPP_Translate_Strings.html?v=20260903231926"
-      ></iframe>
-      <iframe
-        id="frame-images"
-        title="Images"
-        data-src="kit/NLPP_Translate_Images/index.html?v=20260903231926"
+        data-src="kit/NLPP_Translate_Strings.html?v=20261104210000"
       ></iframe>
       <div id="missing" class="missing"></div>
     </div>
 
     <p class="note">
-      Open this <code>index.html</code> — kits live in the <code>kit/</code> folder beside it.
-      Discord:
-      <a href="https://discord.com/channels/1536915629787840572/1545180296343715891" target="_blank" rel="noopener noreferrer">#translated-work-to-review</a>
+      Post the saved JSON in
+      <a href="https://discord.com/channels/1536915629787840572/1545180296343715891" target="_blank" rel="noopener noreferrer">#translated-work-to-review</a>.
     </p>
   </div>
 
+  <script src="kit/update.js?v=3"></script>
   <script>
 (function () {
   const buttons = Array.from(document.querySelectorAll(".tabs button"));
@@ -170,7 +171,7 @@
       b.classList.toggle("active", on);
       b.setAttribute("aria-selected", on ? "true" : "false");
     });
-    ["scripts", "strings", "images"].forEach((id) => {
+    ["scripts", "strings"].forEach((id) => {
       const f = frameFor(id);
       if (f) f.classList.toggle("active", id === tab);
     });
@@ -193,7 +194,7 @@
 
   activate("scripts");
 
-  const dirtyByTool = { scripts: false, strings: false, images: false };
+  const dirtyByTool = { scripts: false, strings: false };
   window.addEventListener("message", (e) => {
     const d = e.data;
     if (!d || d.type !== "nlpp-unsaved") return;
@@ -202,7 +203,7 @@
     }
   });
   window.addEventListener("beforeunload", (e) => {
-    if (!dirtyByTool.scripts && !dirtyByTool.strings && !dirtyByTool.images) return;
+    if (!dirtyByTool.scripts && !dirtyByTool.strings) return;
     e.preventDefault();
     e.returnValue = "";
   });

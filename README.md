@@ -6,15 +6,16 @@ Volunteer localization workbench for **New Love Plus+** English patching.
 
 | Open this | What it is |
 |-----------|------------|
-| **`index.html`** | Tabbed hub (Scripts / Strings / Images) |
+| **`index.html`** | Tabbed hub (Scripts / Strings) |
 | `kit/NLPP_Translate.html` | Dialogue still needing English — **Nene `a*`**, **Rinko `k*`**, **Manaka `t*`**, **common `p*`** |
 | `kit/NLPP_Translate_Strings.html` | **SMS** (all three heroines) + leftover **TRB** / menu strings |
-| `kit/NLPP_Translate_Images/` | **Full UI PNG audit** (~1200 images / ~68 folders; keep `media/` beside `index.html`) |
 
 1. Open **`index.html`**
-2. Use the **Scripts / Strings / Images** tabs
-3. Translate or audit → **Save progress**
-4. Post the downloaded JSON in Discord  
+2. Use the **Scripts / Strings** tabs
+3. Translate → **Save progress**
+4. Post the downloaded JSON in Discord
+
+The page checks GitHub for a newer `version.json`. **Check for updates** runs the same check. When a newer build is published, the open page locks. Pull or re-download, then refresh before editing again. Save stays disabled on the old page so a pack is not written from a stale kit.  
    **[#translated-work-to-review](https://discord.com/channels/1536915629787840572/1545180296343715891)**
 
 ### Quick coverage
@@ -23,10 +24,8 @@ Volunteer localization workbench for **New Love Plus+** English patching.
 |-----|----------|------------------|
 | Scripts | Leftover JP dialogue for **all routes** (Nene/Rinko/Manaka/common) | Fully EN scripts; non-dialog assets |
 | Strings | Leftover **SMS** + **TRB** lines still JP | Already-English mapped strings |
-| Images | **All** mapped UI PNG masters (chrome, softkeys, headers, mail, date-edit, camera, title, …) | Fonts, script XML, TRB binaries |
 
-Keep game tokens unchanged: `▲高嶺＊＊▲` / `▲主人公＊▲`, `※`, `▼`, `●`.  
-Image uploads must be the **same pixel size** as the original.
+Keep game tokens unchanged: `▲高嶺＊＊▲` / `▲主人公＊▲`, `※`, `▼`, `●`.
 
 More detail: [`kit/README.md`](kit/README.md).
 
