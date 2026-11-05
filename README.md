@@ -7,8 +7,8 @@ Volunteer localization workbench for **New Love Plus+** English patching.
 | Open this | What it is |
 |-----------|------------|
 | **`index.html`** | Tabbed hub (Scripts / Strings) |
-| `kit/NLPP_Translate.html` | Dialogue still needing English — **Nene `a*`**, **Rinko `k*`**, **Manaka `t*`**, **common `p*`** |
-| `kit/NLPP_Translate_Strings.html` | **SMS** (all three heroines) + leftover **TRB** / menu strings |
+| `kit/NLPP_Translate.html` | Dialogue for **Nene `a*`**, **Rinko `k*`**, **Manaka `t*`**, **common `p*`**. The edit box is the patcher's current English |
+| `kit/NLPP_Translate_Strings.html` | **SMS** (all three heroines). TRB rows appear only when that Japanese string is not already translated |
 
 1. Open **`index.html`**
 2. Use the **Scripts / Strings** tabs
@@ -22,11 +22,11 @@ The page checks GitHub for a newer `version.json`. **Check for updates** runs th
 
 | Tab | Includes | Does not include |
 |-----|----------|------------------|
-| Scripts | Leftover JP dialogue for **all routes** (Nene/Rinko/Manaka/common) | Fully EN scripts; non-dialog assets |
-| Strings | Leftover **SMS** + **TRB** lines still JP | Already-English mapped strings |
+| Scripts | Every contentful script. **Needs translation** is Japanese still in the edit box, plus an unedited Gemini pass | Empty stubs |
+| Strings | **SMS**, and a TRB line only while the patcher has no translation for that exact Japanese | Strings already in the patcher's translation table |
 
 Keep game tokens unchanged: `▲高嶺＊＊▲` / `▲主人公＊▲`, `※`, `▼`, `●`.
 
 More detail: [`kit/README.md`](kit/README.md).
 
-**Maintainers:** `nlpp-localization-workbench-parser` + EngPatcher `tools/localization_workbench/`. See EngPatcher `README.md` / `technical.md` §17.
+**Maintainers:** `python tools/sync_workbench.py` in EngPatcher. See `docs/technical.md` §20.

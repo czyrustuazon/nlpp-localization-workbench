@@ -5,8 +5,8 @@
 | Open this | What it is |
 |-----------|------------|
 | **`../index.html`** | Tabbed hub (Scripts / Strings) |
-| `NLPP_Translate.html` | Dialogue still needing English (~6 MB) |
-| `NLPP_Translate_Strings.html` | SMS + leftover menu/system strings |
+| `NLPP_Translate.html` | Dialogue. Japanese on the left, the patcher's current English in the edit box |
+| `NLPP_Translate_Strings.html` | SMS, plus TRB lines that are not already in the patcher's translation table |
 
 1. Open **`../index.html`**  
 2. Use the **Scripts / Strings** tabs  
@@ -29,16 +29,16 @@ Counts change when maintainers rebuild; a full kit is roughly **Scripts ~300+ fi
 | `t*` | Manaka | `t151 - #775`, `t970` |
 | `p*` | Common | `p060` |
 
-**Needs translation** only shows scripts that still have Japanese left — often mostly Manaka. Switch **Show → All scripts** and jump to `a*` / `k*` for Nene/Rinko.
+**Needs translation** shows a script when Japanese is still in the edit box, or when that box is still the unreviewed Gemini pass. Switch **Show → All scripts** to open a finished Manaka, common, or community script. The edit box there is the English the patcher ships now.
 
-Many Nene/Rinko (and some post-game) files in the current data are already English or empty stubs, so they won’t appear under Needs work. True JP baselines need a Japanese game extract.
+Six Manaka scripts do not line up box-for-box with the Japanese, so the Japanese pane repeats the shipped English: `t061`, `t108`, `t116`, `t117`, `t142`, `t912`. The scene count matches. A few scenes are one text box short or long. `t912`'s last scene is a choice list with nine English rows and ten Japanese rows (`やめ` / `次へ` became Stop / Next). Leftover Japanese in the edit box can still be translated. This does not change how those scripts play.
 
 ### Strings — SMS + leftover system text
 
 | Kind | Who / what | Jump example |
 |------|------------|--------------|
-| SMS | Manaka, Nene, and Rinko phone messages still JP | `sms/manaka#12` |
-| TRB | Menu / system strings still JP in the main text table | `trb#2837` |
+| SMS | Manaka, Nene, and Rinko phone messages | `sms/manaka#12` |
+| TRB | A menu string only while its exact Japanese is not already translated | `trb#2837` |
 
 SMS has a length limit (tool warns). Same token / `※` / `▼` rules as Scripts.
 
@@ -50,4 +50,4 @@ If Scripts stays empty after opening, grab a fresh `NLPP_Translate.html` and har
 
 ---
 
-Maintainers: build/ingest in `nlpp-localization-workbench-parser`; templates in EngPatcher `tools/localization_workbench/`. See EngPatcher `technical.md` §17.
+Maintainers: `python tools/sync_workbench.py` in EngPatcher rebuilds these kits from the patcher. See EngPatcher `docs/technical.md` §20.
