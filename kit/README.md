@@ -40,7 +40,9 @@ Six Manaka scripts do not line up box-for-box with the Japanese, so the Japanese
 | SMS | Manaka, Nene, and Rinko phone messages | `sms/manaka#12` |
 | TRB | A menu string only while its exact Japanese is not already translated | `trb#2837` |
 
-SMS has a length limit (tool warns). Same token / `※` / `▼` rules as Scripts.
+SMS has a length limit (tool warns). Keep `▲…▲`, `※`, and `▼`. Translate `●` as I / me / my. Left in, the game shows 俺 or 僕.
+
+**Lyud** proofread Nene `a000` (first day at Dixie's). That script is integrated and no longer needs a pass.
 
 ---
 

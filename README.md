@@ -25,7 +25,9 @@ The page checks GitHub for a newer `version.json`. **Check for updates** runs th
 | Scripts | Every contentful script. **Needs translation** is Japanese still in the edit box, plus an unedited Gemini pass | Empty stubs |
 | Strings | **SMS**, and a TRB line only while the patcher has no translation for that exact Japanese | Strings already in the patcher's translation table |
 
-Keep game tokens unchanged: `▲高嶺＊＊▲` / `▲主人公＊▲`, `※`, `▼`, `●`.
+Keep game tokens unchanged: `▲高嶺＊＊▲` / `▲主人公＊▲`, `※`, `▼`. Translate `●` as I / me / my. Left in, the game shows 俺 or 僕.
+
+Reviewed scripts leave the work queue once they are integrated. **Lyud** proofread Nene's first day at Dixie's (`a000`); that script is done.
 
 More detail: [`kit/README.md`](kit/README.md).
 
