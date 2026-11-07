@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="nlpp-workbench-build" content="6" />
+  <meta name="nlpp-workbench-build" content="7" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>NLPP Translate — SMS / TRB</title>
   <script>if (window.parent !== window) document.documentElement.classList.add("embedded");</script>
@@ -421,7 +421,7 @@
   function setUnsaved(on) {
     unsavedChanges = !!on;
     try {
-      if (window.parent && window.parent !== window) {
+      if (window.parent) {
         window.parent.postMessage(
           { type: "nlpp-unsaved", tool: TOOL_ID, dirty: unsavedChanges },
           "*"
@@ -997,6 +997,7 @@
   els.filter.addEventListener("change", applyFilter);
   els.filter.addEventListener("input", applyFilter);
   els.enEdit.addEventListener("input", () => {
+    markUnsaved();
     const L = lines[lineIndex];
     if (!L) return;
     const after = els.enEdit.value;
@@ -1053,6 +1054,6 @@
   bootEmbedded();
 })();
   </script>
-  <script src="update.js?v=3"></script>
+  <script src="update.js?v=4"></script>
 </body>
 </html>

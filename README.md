@@ -2,7 +2,9 @@
 
 Volunteer localization workbench for **New Love Plus+** English patching.
 
-**You do not need Python.** Open **`index.html`**.
+**You do not need Python or a download.** Open the **[online workbench](https://czyrustuazon.github.io/nlpp-localization-workbench/)**. It always has the newest build.
+
+Prefer a local copy? Download the [zip](https://github.com/czyrustuazon/nlpp-localization-workbench/archive/refs/heads/main.zip), unzip all of it, and open **`index.html`**.
 
 | Open this | What it is |
 |-----------|------------|
@@ -10,12 +12,16 @@ Volunteer localization workbench for **New Love Plus+** English patching.
 | `kit/NLPP_Translate.html` | Dialogue for **Nene `a*`**, **Rinko `k*`**, **Manaka `t*`**, **common `p*`**. The edit box is the patcher's current English |
 | `kit/NLPP_Translate_Strings.html` | **SMS** (all three heroines). TRB rows appear only when that Japanese string is not already translated |
 
-1. Open **`index.html`**
+1. Open the [online workbench](https://czyrustuazon.github.io/nlpp-localization-workbench/) or your local **`index.html`**
 2. Use the **Scripts / Strings** tabs
 3. Translate → **Save progress**
 4. Post the downloaded JSON in Discord
 
-The page checks GitHub for a newer `version.json`. **Check for updates** runs the same check. When a newer build is published, the open page locks. Pull or re-download, then refresh before editing again. Save stays disabled on the old page so a pack is not written from a stale kit.  
+The page checks for a newer `version.json`. **Check for updates** runs the same check. When a newer build is published, the page locks. Online, press **Reload**. A local copy links to the online workbench instead. If you have unsaved edits, a warning appears and the lock waits until you **Save progress**. To carry on from a saved JSON, load it from **Advanced** in the Scripts or Strings tab.
+
+**"File not found" in the browser?** That local copy was moved or deleted, so the page cannot run or show the update prompt. Open the [online workbench](https://czyrustuazon.github.io/nlpp-localization-workbench/). Saved JSON files still work.
+
+Post saved JSON in
    **[#translated-work-to-review](https://discord.com/channels/1536915629787840572/1545180296343715891)**
 
 ### Quick coverage

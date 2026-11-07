@@ -1,13 +1,20 @@
-/* Check GitHub for a newer workbench. A newer build locks this page until refresh. */
+/* Check for a newer workbench. A newer build locks the page, or warns first if edits are unsaved. */
 (function () {
   "use strict";
 
-  var REMOTE =
-    "https://raw.githubusercontent.com/czyrustuazon/nlpp-localization-workbench/main/version.json";
+  var ONLINE = "https://czyrustuazon.github.io/nlpp-localization-workbench/";
+  var DOWNLOAD =
+    "https://github.com/czyrustuazon/nlpp-localization-workbench/archive/refs/heads/main.zip";
+  var hosted = window.location.protocol !== "file:";
+  var REMOTE = hosted
+    ? new URL("../version.json", document.currentScript.src).href
+    : "https://raw.githubusercontent.com/czyrustuazon/nlpp-localization-workbench/main/version.json";
   var meta = document.querySelector('meta[name="nlpp-workbench-build"]');
   var local = meta ? Number(meta.getAttribute("content")) : 0;
   if (!Number.isFinite(local)) local = 0;
   var locked = false;
+  var pending = 0;
+  var unsaved = Object.create(null);
   var timer = 0;
 
   function ensureStyle() {
@@ -22,9 +29,28 @@
       "font-family:Segoe UI,system-ui,sans-serif;line-height:1.45;}" +
       "#nlpp-update-lock h2{margin:0 0 .5rem;font-size:1.05rem;}" +
       "#nlpp-update-lock p{margin:.4rem 0;font-size:.92rem;}" +
-      "#nlpp-update-lock button{font:inherit;margin-top:.8rem;color:#e8eaed;background:#2a4558;" +
-      "border:1px solid #4a7a9a;border-radius:6px;padding:.45rem .9rem;cursor:pointer;}";
+      "#nlpp-update-lock a,#nlpp-update-lock button{display:inline-block;font:inherit;font-size:.92rem;" +
+      "margin:.8rem .5rem 0 0;color:#e8eaed;background:#2a2f36;border:1px solid #3a3f46;" +
+      "border-radius:6px;padding:.45rem .9rem;text-decoration:none;cursor:pointer;}" +
+      "#nlpp-update-lock .primary{background:#2a4558;border-color:#4a7a9a;}" +
+      "#nlpp-update-warning{position:fixed;left:0;right:0;bottom:0;z-index:2147483646;margin:0;" +
+      "padding:.55rem 1rem;background:#5a4312;color:#fff3d6;border-top:1px solid #a8822a;" +
+      "font-family:Segoe UI,system-ui,sans-serif;font-size:.9rem;text-align:center;}";
     document.head.appendChild(style);
+  }
+
+  function hasUnsaved() {
+    return Object.keys(unsaved).some(function (tool) { return unsaved[tool]; });
+  }
+
+  function actions() {
+    if (hosted) {
+      return '<button type="button" class="primary" id="nlpp-update-refresh">Reload</button>';
+    }
+    return (
+      '<a class="primary" href="' + ONLINE + '">Open online workbench</a>' +
+      '<a target="_blank" rel="noopener noreferrer" href="' + DOWNLOAD + '">Download a copy</a>'
+    );
   }
 
   function lock(remoteBuild) {
@@ -43,28 +69,53 @@
     overlay.innerHTML =
       '<div class="card">' +
       "<h2>Workbench update</h2>" +
-      "<p>Build " + remoteBuild + " is on GitHub. This page is still build " + local + ".</p>" +
-      "<p>Editing and Save progress are locked so a pack is not written from the old kit. " +
-      "Pull or re-download the latest workbench, then refresh.</p>" +
-      '<button type="button" id="nlpp-update-refresh">Refresh</button>' +
+      "<p>Build " + remoteBuild + " is out. This page is still build " + local + ".</p>" +
+      "<p>Editing is locked so a pack is not written from the old kit.</p>" +
+      "<p>Saved JSON files still work: load them from Advanced in the Scripts or Strings tab.</p>" +
+      actions() +
       "</div>";
     document.body.appendChild(overlay);
     document.addEventListener("keydown", blockEvent, true);
     document.addEventListener("keypress", blockEvent, true);
     document.addEventListener("input", blockEvent, true);
     document.addEventListener("click", blockEvent, true);
-    document.getElementById("nlpp-update-refresh").addEventListener("click", function () {
-      window.location.reload();
-    });
-    if (window.parent && window.parent !== window) {
-      window.parent.postMessage({ type: "nlpp-update-lock", build: remoteBuild }, "*");
+    var refresh = document.getElementById("nlpp-update-refresh");
+    if (refresh) refresh.addEventListener("click", function () { window.location.reload(); });
+  }
+
+  function showWarning(remoteBuild) {
+    ensureStyle();
+    var warning = document.getElementById("nlpp-update-warning");
+    if (!warning) {
+      warning = document.createElement("p");
+      warning.id = "nlpp-update-warning";
+      warning.setAttribute("role", "alert");
+      document.body.appendChild(warning);
+    }
+    warning.textContent =
+      "Build " + remoteBuild + " is out and you have unsaved edits. " +
+      "Press Save progress now. The page locks for the update once your edits are saved.";
+  }
+
+  function hideWarning() {
+    var warning = document.getElementById("nlpp-update-warning");
+    if (warning) warning.remove();
+  }
+
+  function applyPending() {
+    if (!pending || locked) return;
+    if (hasUnsaved()) {
+      showWarning(pending);
+    } else {
+      hideWarning();
+      lock(pending);
     }
   }
 
   function blockEvent(event) {
     if (!locked) return;
-    var refresh = document.getElementById("nlpp-update-refresh");
-    if (event.type === "click" && refresh && (event.target === refresh || refresh.contains(event.target))) {
+    if (event.type === "click" && event.target.closest &&
+        event.target.closest("#nlpp-update-lock a, #nlpp-update-lock button")) {
       return;
     }
     event.preventDefault();
@@ -90,7 +141,8 @@
         var remote = Number(data && data.build);
         if (!Number.isFinite(remote)) throw new Error("bad version");
         if (remote > local) {
-          lock(remote);
+          pending = remote;
+          applyPending();
           return;
         }
         if (manual) report("Up to date (build " + local + ").");
@@ -101,7 +153,6 @@
   }
 
   function mountButton() {
-    if (window.parent !== window) return;
     if (document.getElementById("nlpp-check-updates")) return;
     var header = document.querySelector("header");
     if (!header) return;
@@ -118,13 +169,18 @@
     header.appendChild(status);
   }
 
-  window.addEventListener("message", function (event) {
-    var data = event.data;
-    if (!data || data.type !== "nlpp-update-lock") return;
-    lock(Number(data.build) || local + 1);
-  });
-
   function start() {
+    // The hub runs the check for its tabs.
+    if (window.parent !== window) {
+      window.parent.postMessage({ type: "nlpp-kit-ready" }, "*");
+      return;
+    }
+    window.addEventListener("message", function (event) {
+      var data = event.data;
+      if (!data || data.type !== "nlpp-unsaved") return;
+      unsaved[data.tool] = !!data.dirty;
+      applyPending();
+    });
     mountButton();
     check(false);
     timer = window.setInterval(function () { check(false); }, 5 * 60 * 1000);

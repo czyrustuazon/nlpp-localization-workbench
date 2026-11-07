@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="nlpp-workbench-build" content="6" />
+  <meta name="nlpp-workbench-build" content="7" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>NLPP Translate</title>
   <script>if (window.parent !== window) document.documentElement.classList.add("embedded");</script>
@@ -532,7 +532,7 @@
   function setUnsaved(on) {
     unsavedChanges = !!on;
     try {
-      if (window.parent && window.parent !== window) {
+      if (window.parent) {
         window.parent.postMessage(
           { type: "nlpp-unsaved", tool: TOOL_ID, dirty: unsavedChanges },
           "*"
@@ -1019,6 +1019,7 @@
         updateTokenWarn(row, base, text);
         autoSize(ta, base);
         ta.addEventListener("input", () => {
+          markUnsaved();
           updateTokenWarn(row, base, ta.value);
           autoSize(ta, base);
           const badge = row.querySelector(".badge");
@@ -1379,6 +1380,6 @@
   bootEmbedded();
 })();
   </script>
-  <script src="update.js?v=3"></script>
+  <script src="update.js?v=4"></script>
 </body>
 </html>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="nlpp-workbench-build" content="6" />
+  <meta name="nlpp-workbench-build" content="7" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>NLPP Localization Workbench</title>
   <style>
@@ -108,8 +108,11 @@
       padding: 2rem;
       text-align: center;
       color: var(--muted);
+      background: var(--bg);
       line-height: 1.5;
     }
+    .missing p { max-width: 32rem; margin: 0.5rem auto; }
+    .missing a { color: var(--accent); }
     .missing.show { display: flex; }
   </style>
 </head>
@@ -135,7 +138,12 @@
         title="Strings"
         data-src="kit/NLPP_Translate_Strings.html?v=20261104210000"
       ></iframe>
-      <div id="missing" class="missing"></div>
+      <div id="missing" class="missing">
+        <div>
+          <p id="missing-text"></p>
+          <p><a href="https://czyrustuazon.github.io/nlpp-localization-workbench/">Open the online workbench</a> or <a href="https://github.com/czyrustuazon/nlpp-localization-workbench/archive/refs/heads/main.zip" target="_blank" rel="noopener noreferrer">download a copy</a></p>
+        </div>
+      </div>
     </div>
 
     <p class="note">
@@ -144,25 +152,30 @@
     </p>
   </div>
 
-  <script src="kit/update.js?v=3"></script>
+  <script src="kit/update.js?v=4"></script>
   <script>
 (function () {
   const buttons = Array.from(document.querySelectorAll(".tabs button"));
   const missing = document.getElementById("missing");
+  const missingText = document.getElementById("missing-text");
   const loaded = Object.create(null);
+  const ready = Object.create(null);
+  const failed = Object.create(null);
+  // A failed iframe still fires "load", so the kit has to report in.
+  const READY_WAIT_MS = 1500;
 
   function frameFor(tab) {
     return document.getElementById("frame-" + tab);
   }
 
   function showMissing(msg) {
-    missing.textContent = msg;
+    missingText.textContent = msg;
     missing.classList.add("show");
   }
 
   function hideMissing() {
     missing.classList.remove("show");
-    missing.textContent = "";
+    missingText.textContent = "";
   }
 
   function activate(tab) {
@@ -178,12 +191,19 @@
     hideMissing();
     const frame = frameFor(tab);
     if (!frame) return;
+    if (failed[tab]) showMissing(failed[tab]);
     if (!loaded[tab]) {
       const src = frame.getAttribute("data-src");
       frame.src = src;
       loaded[tab] = true;
-      frame.addEventListener("error", () => {
-        showMissing("Could not load " + src + ". Check that kit/ exists next to this index.");
+      frame.addEventListener("load", () => {
+        setTimeout(() => {
+          if (ready[tab] || failed[tab]) return;
+          failed[tab] =
+            "Could not load " + src.split("?")[0] + ". The kit folder has to sit next to this index.html. " +
+            "Use the online workbench, or unzip a full copy and open index.html there.";
+          if (frame.classList.contains("active")) showMissing(failed[tab]);
+        }, READY_WAIT_MS);
       });
     }
   }
@@ -197,6 +217,12 @@
   const dirtyByTool = { scripts: false, strings: false };
   window.addEventListener("message", (e) => {
     const d = e.data;
+    if (d && d.type === "nlpp-kit-ready") {
+      ["scripts", "strings"].forEach((id) => {
+        if (frameFor(id).contentWindow === e.source) ready[id] = true;
+      });
+      return;
+    }
     if (!d || d.type !== "nlpp-unsaved") return;
     if (Object.prototype.hasOwnProperty.call(dirtyByTool, d.tool)) {
       dirtyByTool[d.tool] = !!d.dirty;

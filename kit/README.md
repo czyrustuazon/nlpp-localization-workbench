@@ -1,6 +1,6 @@
 # NLPP Localization Workbench (for translators)
 
-**You do not need Python.** Open the hub one level up: **`../index.html`**.
+**You do not need Python.** Use the [online workbench](https://czyrustuazon.github.io/nlpp-localization-workbench/), or open the hub one level up: **`../index.html`**.
 
 | Open this | What it is |
 |-----------|------------|
@@ -49,6 +49,8 @@ SMS has a length limit (tool warns). Keep `▲…▲`, `※`, and `▼`. Transla
 Tabs keep each tool loaded in the background (unsaved edits stay until you close the window). You can still open any kit HTML in this folder directly if you prefer.
 
 If Scripts stays empty after opening, grab a fresh `NLPP_Translate.html` and hard-refresh (`Ctrl+F5`).
+
+If the browser says the file can't be found, that copy was moved or deleted. Open the [online workbench](https://czyrustuazon.github.io/nlpp-localization-workbench/) and bring back saved work from **Advanced** in the Scripts or Strings tab.
 
 ---
 
