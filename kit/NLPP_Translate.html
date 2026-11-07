@@ -183,6 +183,16 @@
       font-size: 0.85rem;
       margin-left: auto;
     }
+    .script-credit {
+      flex-basis: 100%;
+      font-size: 0.85rem;
+      color: var(--ok);
+    }
+    #scriptList .by {
+      font-family: var(--sans);
+      font-size: 0.72rem;
+      color: var(--ok);
+    }
     .jump-box {
       display: flex;
       flex-wrap: wrap;
@@ -416,6 +426,7 @@
             <span class="hint" id="jumpHint">Use script id and line like <code>t151 - #775</code>. Position is saved as you work.</span>
           </div>
           <span class="meta" id="position"></span>
+          <span class="script-credit" id="scriptCredit" hidden></span>
         </div>
 
         <div class="line-tools">
@@ -461,6 +472,14 @@
     manaka: "Manaka",
     common: "General",
   };
+  /** Stem -> person who proofread the shipped English. */
+  const REVIEWED_BY = {
+    a000: "Lyud",
+  };
+
+  function reviewerOf(s) {
+    return REVIEWED_BY[(s && s.stem) || ""] || "";
+  }
 
   function routeOf(s) {
     const given = s && s.route;
@@ -498,6 +517,7 @@
     onlyNeeds: $("onlyNeeds"),
     lineCountHint: $("lineCountHint"),
     position: $("position"),
+    scriptCredit: $("scriptCredit"),
     jumpInput: $("jumpInput"),
     jumpHint: $("jumpHint"),
     btnJump: $("btnJump"),
@@ -832,7 +852,9 @@
       li.innerHTML =
         '<span class="name"><span class="who ' + who + '" title="' + escapeHtml(routeTitle(s)) + '">' +
         escapeHtml(ROUTE_LABEL[who]) + "</span>" +
-        escapeHtml(s.stem) + (s.dirty ? " *" : "") + "</span>" +
+        escapeHtml(s.stem) +
+        (reviewerOf(s) ? ' <span class="by">' + escapeHtml(reviewerOf(s)) + "</span>" : "") +
+        (s.dirty ? " *" : "") + "</span>" +
         '<span class="badge ' + (needsN ? "jp" : "en") + '" title="' +
         needsN + " still needing work · " + total + ' lines total">' +
         (needsN ? needsN + " left · " + total : "OK · " + total) + "</span>";
@@ -1031,10 +1053,19 @@
     dialogIndex = Math.max(0, Math.min(dialogIndex, s.dialogs.length - 1));
     const needsN = s.dialogs.filter((_, i) => lineNeedsWork(s, i)).length;
     const who = routeOf(s);
+    const credit = reviewerOf(s);
     els.position.innerHTML =
       '<span class="who ' + who + '">' + escapeHtml(routeTitle(s)) + "</span> " +
-      escapeHtml(s.stem) + " · " + needsN + " left / " + s.dialogs.length +
+      escapeHtml(s.stem) +
+      (credit ? " · proofread by " + escapeHtml(credit) : "") +
+      " · " + needsN + " left / " + s.dialogs.length +
       " · script " + (scriptIndex + 1) + "/" + scripts.length;
+    if (els.scriptCredit) {
+      els.scriptCredit.hidden = !credit;
+      els.scriptCredit.textContent = credit
+        ? "Proofread by " + credit + ". This script is finished."
+        : "";
+    }
     suppressSave = true;
     renderDialogRows();
     suppressSave = false;
