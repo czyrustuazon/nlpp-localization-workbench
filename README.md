@@ -33,7 +33,7 @@ Post saved JSON in
 
 Keep game tokens unchanged: `▲高嶺＊＊▲` / `▲主人公＊▲`, `※`, `▼`. Translate `●` as I / me / my. Left in, the game shows 俺 or 僕.
 
-Reviewed scripts leave the work queue once they are integrated. **Lyud** proofread Nene's first day at Dixie's (`a000`); that script is done.
+Reviewed scripts leave the work queue once they are integrated. **Armando Esteban Quito** translated Nene's first day at Dixie's (`a000`); that script is done. He also translated lines in `a002`, `a004`, and `a005`. **Dnnz.Cstr** translated Rinko's hair and outfit reactions in `k007`; some lines there still need a pass. Each line card says whose English ships on it: the contributor, Gemini, or the 2016-17 community translation, and whether review edited it.
 
 More detail: [`kit/README.md`](kit/README.md).
 

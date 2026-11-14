@@ -42,7 +42,11 @@ Six Manaka scripts do not line up box-for-box with the Japanese, so the Japanese
 
 SMS has a length limit (tool warns). Keep `▲…▲`, `※`, and `▼`. Translate `●` as I / me / my. Left in, the game shows 俺 or 僕.
 
-**Lyud** proofread Nene `a000` (first day at Dixie's). That script is integrated and no longer needs a pass.
+**Armando Esteban Quito** translated Nene `a000` (first day at Dixie's). That script is integrated and no longer needs a pass. He also translated lines in `a002`, `a004`, and `a005`.
+
+**Dnnz.Cstr** translated Rinko's hair and outfit reactions in `k007`. Some lines there still need a pass.
+
+Each line card shows **English in patch:** the contributor whose wording ships on that line, or Gemini, or the community (NLPPATCH 2016-17) translation, with "improved in review" or "edited in review" when a maintainer changed it.
 
 ---
 
