@@ -33,6 +33,8 @@ Counts change when maintainers rebuild; a full kit is roughly **Scripts ~300+ fi
 
 Six Manaka scripts do not line up box-for-box with the Japanese, so the Japanese pane repeats the shipped English: `t061`, `t108`, `t116`, `t117`, `t142`, `t912`. The scene count matches. A few scenes are one text box short or long. `t912`'s last scene is a choice list with nine English rows and ten Japanese rows (`やめ` / `次へ` became Stop / Next). Leftover Japanese in the edit box can still be translated. This does not change how those scripts play.
 
+**Line width is a hard rule.** Every English line must fit the game: **30 columns** in the talk window, **28** on a choice button. Letters, digits, spaces, and ASCII marks count 1; `？`, `…`, `！` and other wide marks count 2; a name token like `▲高嶺＊＊▲` counts 8. A line that is too wide shows a warning under its box. Press Enter to break it, or shorten it. Save is blocked while an edited line is too wide.
+
 ### Strings — SMS + leftover system text
 
 | Kind | Who / what | Jump example |
